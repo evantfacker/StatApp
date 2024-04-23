@@ -22,11 +22,11 @@
 
 
 
-    <div id="Output"><p>This is Output</p>
+    <div id="Output">
 
       <h1>Regression Analysis Results</h1>
-      <p>Intercept: {{ intercept }}</p>
-      <p>Coefficients:</p>
+      <div><h3>Intercept :</h3> <p><ul><li>{{Y_col_name}} : {{ intercept }}</li></ul></p></div>
+      <h3>Coefficients:</h3>
       <ul>
         {% for name, coefficient in coefficients_with_names %}
           <li>{{name}} : {{ coefficient }}</li>

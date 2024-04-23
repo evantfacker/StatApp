@@ -14,7 +14,6 @@ import numpy as np
 # Create your views here.
 def home(request):
     return render(request, "base.html")
-    #return HttpResponse("Hello World!")
 
 def upload_fileDes(request):
     if request.method == 'POST':
@@ -22,6 +21,18 @@ def upload_fileDes(request):
         if form.is_valid():
 
             dataFrame = pd.read_csv(request.FILES['file'].temporary_file_path(), index_col=None)
+
+            ## Error Traping
+
+            for col in dataFrame.columns:
+                try:
+                    pd.to_numeric(dataFrame[col])  # Try to convert column to numeric
+                    pass
+                except ValueError:
+                    output = f"Bad data try again. Non-Numeric Data in column: '{col}'"
+                    model = {"BadDataAlertHTML_Des": output,
+                             "BadDataAlertHTML": ""}
+                    return render(request, "base.html", model)
 
             data_set = DataSet.objects.create(name="datasetStatistics")
             
@@ -31,12 +42,20 @@ def upload_fileDes(request):
                 Statistic.objects.create(col_name=col,stat_name="mean",value=mean,data_set=data_set)
 
             for col in dataFrame.columns:
-                mean=st.median(dataFrame[col].dropna().values)
-                Statistic.objects.create(col_name=col,stat_name="median",value=mean,data_set=data_set)
+                median=st.median(dataFrame[col].dropna().values)
+                Statistic.objects.create(col_name=col,stat_name="median",value=median,data_set=data_set)
 
             for col in dataFrame.columns:
-                mean=st.mode(dataFrame[col].dropna().values)
-                Statistic.objects.create(col_name=col,stat_name="mode",value=mean,data_set=data_set)
+                try:
+                    data=dataFrame[col].dropna().values
+                    mode=st.mode(data)
+                    if mode==data[0]:
+                        Statistic.objects.create(col_name=col,stat_name="mode",value=0,data_set=data_set)
+                    else:
+                        Statistic.objects.create(col_name=col,stat_name="mode",value=mode,data_set=data_set)
+                except st.StatisticsError:
+                        Statistic.objects.create(col_name=col,stat_name="mode",value=0,data_set=data_set)
+
 
             for col in dataFrame.columns:
                 mean=min(dataFrame[col].dropna().values)
@@ -101,11 +120,22 @@ def upload_fileReg(request):
 
                     if value is None or pd.isna(value) or pd.isnull(value):
                         Nan_Val = True
-                        output = f"Bad data try again. {col} on {index}"
-                        model = {"dataTableHTML": output}
+                        col_num = index + 2
+                        output = f"Bad data try again. <br> In column: '{col}' <br> In Row: {col_num}"
+                        model = {"BadDataAlertHTML": output,
+                                 "BadDataAlertHTML_Des": ""}
                         return render(request, "base.html", model)  
                     index += 1
-
+            
+            for col in data.columns:
+                try:
+                    pd.to_numeric(data[col])  # Try to convert column to numeric
+                    pass
+                except ValueError:
+                    output = f"Bad data try again. Non-Numeric Data in column: '{col}'"
+                    model = {"BadDataAlertHTML": output,
+                             "BadDataAlertHTML_Des": ""}
+                    return render(request, "base.html", model)
 
             first_column_length = len(data[data.columns[0]])
             all_same_length = True
@@ -113,13 +143,15 @@ def upload_fileReg(request):
             for col in data.columns:
                 if len(data[col]) != first_column_length:
                     all_same_length = False
-                    output = f"Bad Data Please Try Again! \n {col}"
-                    model = {"dataTableHTML": output}
+                    output = f"Bad Data Please Try Again! <br> Column '{col}' is an unacceptable length."
+                    model = {"BadDataAlertHTML": output,
+                             "BadDataAlertHTML_Des": ""}
                     return render(request, "base.html", model) 
 
             if all_same_length==False or len(col_names)<2 or Nan_Val==True: 
-                output = "Bad Data Please Try Again!"
-                model = {"dataTableHTML": output}
+                output = "Bad Data Please Try Again! <br> Must have at least two columns of numeric data with equal length."
+                model = {"BadDataAlertHTML": output,
+                         "BadDataAlertHTML_Des": ""}
                 return render(request, "base.html", model)
 
 
@@ -151,7 +183,7 @@ def upload_fileReg(request):
             model = {
                 'intercept': intercept,
                 'coefficients': coefficients,
-                'Y-name': Y_col_name,
+                'Y_col_name': Y_col_name,
                 'X-names': X_cols_names,
                 'coefficients_with_names': coefficients_with_names
             }

@@ -11,6 +11,7 @@
   </head>
   {% block content %}
     <body>
+    
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="{% url 'home' %}">StatApp</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -26,50 +27,49 @@
         </div>
       </nav>
 
-      <div id="Welcome"> Welcome to StatApp, we empower you to explore the world of statistics with ease and precision. Whether you're a seasoned statistician, <br>
-        a student delving into data analysis, or someone simply curious about numbers, our platform provides the tools you need to calculate a wide range of <br>
-        statistics quickly and accurately.</div>
+      
+
+      <div id="Welcome" class="text-center text-justify justify-center">
+        <div> Welcome to StatApp, we empower you to explore the world of statistics with ease and precision. Whether you're a seasoned statistician, <br>
+          a student delving into data analysis, or someone simply curious about numbers, our platform provides the tools you need to calculate a wide range of <br>
+          statistics quickly and accurately. Just upload a CSV file and have your outputs generated in the blink of an eye!<p></p></div>
+          <div class="container"><p class="alert-danger text-center">{{BadDataAlertHTML|safe}}</p><p class="alert-danger text-center">{{BadDataAlertHTML_Des|safe}}</p></div>
+      </div>
+      
 
 
 
 
       <div id="DescriptiveStatisticsInput">
       <!--Upload Data Form for Descriptive Statistics-->
-        <p>This is Data Input for Descriptive Statistics</p>
+      <h3>Data Input for Descriptive Statistics</h3>
 
         <form action="{% url 'upload-fileDes' %}" method="post" enctype="multipart/form-data">
           {% csrf_token %}
-          Select file to upload:
-          <input type="file" name="file" id="fileToUpload">
+          Select a CSV file to upload:
+          <input type="file" name="file" id="fileToUpload" accept=".csv" required>
           <input type="submit" value="Upload File" name="submit">
         </form>
 
         <div>
-          <p>This is a partial content loaded dynamically.</p>
-          {% if dataTableHTML %}
-            <p>{{ dataTableHTML|safe }}</p>
-          {% else %}
-            <p>No data provided.</p>
-          {% endif %}
+          <div class="container"><p class="alert-danger text-center">{{BadDataAlertHTML_Des|safe}}</p></div> 
         </div>
       </div>
 
 
-
-
       <div id="RegressionAnalysisInput">
     <!--Upload Data Form for Regression Analysis Statistics-->
-        <p>This is Data Input for Regression Analysis Statistics</p>
+    <h3>Data Input for Regression Analysis Statistics</h3>
 
         <form action="{% url 'upload-fileReg' %}" method="post" enctype="multipart/form-data">
           {% csrf_token %}
-          Select file to upload:
-          <input type="file" name="file" id="fileToUpload">
+          Select a CSV file to upload:
+          <input type="file" name="file" id="fileToUpload" accept=".csv" required>
           <input type="submit" value="Upload File" name="submit">
         </form>
 
         <div>
-          <p>{{dataTableHTML|safe}}</p>
+          <div class="container"><p class="alert-danger text-center">{{BadDataAlertHTML|safe}}</p></div>
         </div>
       </div>
 
@@ -107,7 +107,7 @@
       </script>
 
 
-
+    
     </body>
 
   {% endblock %}
