@@ -111,12 +111,25 @@ def upload_fileReg(request):
 
             ## Error Trapping
 
+            first_column_length = len(data[data.columns[0]].dropna().values)
+            all_same_length = True
+
+            for col in data.columns:
+                if len(data[col].dropna().values) != first_column_length:
+                    all_same_length = False
+                    output = f"Bad Data Please Try Again! <br> Column '{col}' is an unacceptable length."
+                    model = {"BadDataAlertHTML": output,
+                             "BadDataAlertHTML_Des": ""}
+                    return render(request, "base.html", model) 
+
+
 
             Nan_Val = False
 
             for col in data.columns:
                 index = 0
                 for value in data[col]:
+
 
                     if value is None or pd.isna(value) or pd.isnull(value):
                         Nan_Val = True
@@ -136,17 +149,6 @@ def upload_fileReg(request):
                     model = {"BadDataAlertHTML": output,
                              "BadDataAlertHTML_Des": ""}
                     return render(request, "base.html", model)
-
-            first_column_length = len(data[data.columns[0]])
-            all_same_length = True
-
-            for col in data.columns:
-                if len(data[col]) != first_column_length:
-                    all_same_length = False
-                    output = f"Bad Data Please Try Again! <br> Column '{col}' is an unacceptable length."
-                    model = {"BadDataAlertHTML": output,
-                             "BadDataAlertHTML_Des": ""}
-                    return render(request, "base.html", model) 
 
             if all_same_length==False or len(col_names)<2 or Nan_Val==True: 
                 output = "Bad Data Please Try Again! <br> Must have at least two columns of numeric data with equal length."
