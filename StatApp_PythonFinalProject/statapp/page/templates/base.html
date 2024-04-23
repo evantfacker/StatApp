@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Base Template for SPA -->
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Base{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"  rel="stylesheet" />
+  </head>
+  {% block content %}
+    <body>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'home' %}">StatApp</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <input type="button" id="DescriptiveStatistics" value="Descriptive Statistics" class="btn btn-primary">
+            </li>
+            <li class="nav-item">
+              <a><input type="button" id="RegressionAnalysis" value="Regression Analysis" class="btn btn-primary"></a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div id="Welcome"> Welcome to StatApp, we empower you to explore the world of statistics with ease and precision. Whether you're a seasoned statistician, <br>
+        a student delving into data analysis, or someone simply curious about numbers, our platform provides the tools you need to calculate a wide range of <br>
+        statistics quickly and accurately.</div>
+
+
+
+
+      <div id="DescriptiveStatisticsInput">
+      <!--Upload Data Form for Descriptive Statistics-->
+        <p>This is Data Input for Descriptive Statistics</p>
+
+        <form action="{% url 'upload-fileDes' %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          Select file to upload:
+          <input type="file" name="file" id="fileToUpload">
+          <input type="submit" value="Upload File" name="submit">
+        </form>
+
+        <div>
+          <p>This is a partial content loaded dynamically.</p>
+          {% if dataTableHTML %}
+            <p>{{ dataTableHTML|safe }}</p>
+          {% else %}
+            <p>No data provided.</p>
+          {% endif %}
+        </div>
+      </div>
+
+
+
+
+      <div id="RegressionAnalysisInput">
+    <!--Upload Data Form for Regression Analysis Statistics-->
+        <p>This is Data Input for Regression Analysis Statistics</p>
+
+        <form action="{% url 'upload-fileReg' %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          Select file to upload:
+          <input type="file" name="file" id="fileToUpload">
+          <input type="submit" value="Upload File" name="submit">
+        </form>
+
+        <div>
+          <p>{{dataTableHTML|safe}}</p>
+        </div>
+      </div>
+
+
+
+
+      <div class="container"></div>
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" ></script>
+
+      <script>
+
+// Click Event Handlers for Nav Bar
+
+        "use strict";
+
+
+        $("#DescriptiveStatisticsInput").hide();
+        $("#RegressionAnalysisInput").hide();
+
+
+        $("#DescriptiveStatistics").click(function(){
+          $("#Welcome").hide();
+          $("#RegressionAnalysisInput").hide();
+          $("#DescriptiveStatisticsInput").show();
+        });
+
+        $("#RegressionAnalysis").click(function(){
+          $("#Welcome").hide();
+          $("#DescriptiveStatisticsInput").hide();
+          $("#RegressionAnalysisInput").show();
+        });
+
+
+      </script>
+
+
+
+    </body>
+
+  {% endblock %}
+
+</html>
