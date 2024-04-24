@@ -58,20 +58,20 @@ def upload_fileDes(request):
 
 
             for col in dataFrame.columns:
-                mean=min(dataFrame[col].dropna().values)
-                Statistic.objects.create(col_name=col,stat_name="min",value=mean,data_set=data_set)
+                Min=min(dataFrame[col].dropna().values)
+                Statistic.objects.create(col_name=col,stat_name="min",value=Min,data_set=data_set)
 
             for col in dataFrame.columns:
-                mean=max(dataFrame[col].dropna().values)
-                Statistic.objects.create(col_name=col,stat_name="max",value=mean,data_set=data_set)
+                Max=max(dataFrame[col].dropna().values)
+                Statistic.objects.create(col_name=col,stat_name="max",value=Max,data_set=data_set)
 
             for col in dataFrame.columns:
-                mean=st.variance(dataFrame[col].dropna().values)
-                Statistic.objects.create(col_name=col,stat_name="variance",value=mean,data_set=data_set)
+                variance=st.variance(dataFrame[col].dropna().values)
+                Statistic.objects.create(col_name=col,stat_name="variance",value=variance,data_set=data_set)
 
             for col in dataFrame.columns:
-                mean=st.stdev(dataFrame[col].dropna().values)
-                Statistic.objects.create(col_name=col,stat_name="sDev",value=mean,data_set=data_set)
+                stdev=st.stdev(dataFrame[col].dropna().values)
+                Statistic.objects.create(col_name=col,stat_name="sDev",value=stdev,data_set=data_set)
 
             return redirect(reverse('view_dataset', kwargs={'dataset_id': data_set.id}))         
  
